@@ -42,6 +42,7 @@ public class Book {
 
   public String getTitle() { return this.title; }
   public Author getAuthor() { return this.author; }
+  public EnumSet<Genre> getGenres() { return this.genres; }
 
   public int getId() { return this.id; }
 }
