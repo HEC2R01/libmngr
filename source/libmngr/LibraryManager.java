@@ -16,6 +16,13 @@ public class LibraryManager {
   }
 
   public void addBook(Book book) {
+    Logger.info("========== [Adding Book] ==========");
+    Logger.info("Title: %s", book.getTitle());
+    Logger.info("Author: %s", book.getAuthor().toString());
+    Logger.info("Genres: %s", book.getGenres().toString());
+    Logger.info("Id: %d", book.getId());
+    Logger.info("===================================");
+
     this.titleIndexer.insert(book.getTitle(), book.getId());
     this.authorIndexer.insert(book.getAuthor(), book.getId());
     this.bookDatabase.insert(book.getId(), book);
