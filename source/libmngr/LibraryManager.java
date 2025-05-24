@@ -1,18 +1,21 @@
 package libmngr;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class LibraryManager {
   // TODO: Look into 'B Trees' for indexing and 'B+ Trees' for database storage
   //       if we have enough time (or motivation...).
-  private BSTree<String, ArrayList<Book>> titleIndexer;
-  private BSTree<String, ArrayList<Book>> authorIndexer;
+  private TreeMap<String, ArrayList<Book>> titleIndexer;
+  private TreeMap<String, ArrayList<Book>> authorIndexer;
+  private TreeMap<Integer, ArrayList<Book>> idIndexer;
 
   public LibraryManager() {
     Logger.info("Creating 'LibraryManager' instance...");
   
-    this.titleIndexer = new BSTree<String, ArrayList<Book>>();
-    this.authorIndexer = new BSTree<String, ArrayList<Book>>();
+    this.titleIndexer = new TreeMap<>();
+    this.authorIndexer = new TreeMap<>();
+    this.idIndexer = new TreeMap<>();
   }
 
   public void addBook(Book book) {
@@ -23,15 +26,20 @@ public class LibraryManager {
     Logger.info("Id: %d", book.getId());
     Logger.info("===================================");
 
-    if (titleIndexer.search(book.getTitle()) == null) {
-      titleIndexer.insert(book.getTitle(), new ArrayList<Book>());
+    if (!titleIndexer.containsKey(book.getTitle())) {
+      titleIndexer.put(book.getTitle(), new ArrayList<>());
     }
-    titleIndexer.search(book.getTitle()).getValue().add(book);
+    titleIndexer.get(book.getTitle()).add(book);
 
-    if (authorIndexer.search(book.getAuthor().toString()) == null) {
-      authorIndexer.insert(book.getAuthor().toString(), new ArrayList<Book>());
+    if (!authorIndexer.containsKey(book.getAuthor().toString())) {
+      authorIndexer.put(book.getAuthor().toString(), new ArrayList<>());
     }
-    authorIndexer.search(book.getAuthor().toString()).getValue().add(book);
+    authorIndexer.get(book.getAuthor().toString()).add(book);
+    
+    if (!idIndexer.containsKey(book.getId)) {
+      idIndexer.put(book.getId(), new ArrayList<>());
+    }
+    idIndexer.get(book.getId()).add(book);
   }
 
   public void removeBook(Book book) {
@@ -47,12 +55,14 @@ public class LibraryManager {
   }
 
   public ArrayList<Book> getBooks(String title) {
-    var node = titleIndexer.search(title);
-    return node == null ? null : node.getValue();
+    return titleIndexer.containsKey(title) ? titleIndexer.get(title) : null;
   }
 
   public ArrayList<Book> getBooks(Author author) {
-    var node = authorIndexer.search(author.toString());
-    return node == null ? null : node.getValue();
+    return authorIndexer.containsKey(author.toString()) ? authorIndexer.get(author.toString()) : null;
+  }
+
+  public ArrayList<Book> getBooks(int id) {
+    return idIndexer.containsKey(id) ? idIndexer.get(id) : null;
   }
 }
