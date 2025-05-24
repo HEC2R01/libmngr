@@ -1,16 +1,18 @@
 package libmngr;
 
+import java.util.ArrayList;
+
 public class LibraryManager {
   // TODO: Look into 'B Trees' for indexing and 'B+ Trees' for database storage
   //       if we have enough time (or motivation...).
-  private BSTree<String, Book> titleIndexer;
-  private BSTree<String, Book> authorIndexer;
+  private BSTree<String, ArrayList<Book>> titleIndexer;
+  private BSTree<String, ArrayList<Book>> authorIndexer;
 
   public LibraryManager() {
     Logger.info("Creating 'LibraryManager' instance...");
   
-    this.titleIndexer = new BSTree<String, Book>();
-    this.authorIndexer = new BSTree<String, Book>();
+    this.titleIndexer = new BSTree<String, ArrayList<Book>>();
+    this.authorIndexer = new BSTree<String, ArrayList<Book>>();
   }
 
   public void addBook(Book book) {
@@ -21,8 +23,15 @@ public class LibraryManager {
     Logger.info("Id: %d", book.getId());
     Logger.info("===================================");
 
-    this.titleIndexer.insert(book.getTitle(), book);
-    this.authorIndexer.insert(book.getAuthor().toString(), book);
+    if (titleIndexer.search(book.getTitle()) == null) {
+      titleIndexer.insert(book.getTitle(), new ArrayList<Book>());
+    }
+    titleIndexer.search(book.getTitle()).getValue().add(book);
+
+    if (authorIndexer.search(book.getAuthor().toString()) == null) {
+      authorIndexer.insert(book.getAuthor().toString(), new ArrayList<Book>());
+    }
+    authorIndexer.search(book.getAuthor().toString()).getValue().add(book);
   }
 
   public void removeBook(Book book) {
@@ -37,12 +46,12 @@ public class LibraryManager {
     this.authorIndexer.remove(book.getAuthor().toString());
   }
 
-  public Book getBook(String title) {
+  public ArrayList<Book> getBooks(String title) {
     var node = titleIndexer.search(title);
     return node == null ? null : node.getValue();
   }
 
-  public Book getBook(Author author) {
+  public ArrayList<Book> getBooks(Author author) {
     var node = authorIndexer.search(author.toString());
     return node == null ? null : node.getValue();
   }
