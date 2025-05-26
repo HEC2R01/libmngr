@@ -36,7 +36,7 @@ public class LibraryManager {
     }
     authorIndexer.get(book.getAuthor().toString()).add(book);
     
-    if (!idIndexer.containsKey(book.getId)) {
+    if (!idIndexer.containsKey(book.getId())) {
       idIndexer.put(book.getId(), new ArrayList<>());
     }
     idIndexer.get(book.getId()).add(book);
