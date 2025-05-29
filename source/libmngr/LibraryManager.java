@@ -52,6 +52,16 @@ public class LibraryManager {
 
     this.titleIndexer.remove(book.getTitle());
     this.authorIndexer.remove(book.getAuthor().toString());
+    this.idIndexer.remove(book.getId());
+  }
+
+  public ArrayList<Book> getBooks() {
+    ArrayList<Book> books = new ArrayList<>();
+    for (ArrayList<Book> book : idIndexer.values()) {
+      books.add(book.get(0));
+    }
+
+    return books;
   }
 
   public ArrayList<Book> getBooks(String title) {
